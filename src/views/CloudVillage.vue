@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <router-view></router-view>
-  </div>
+  <!-- 云村 -->
+  <div class="cloudVillage">云村</div>
 </template>
 
 <script setup></script>

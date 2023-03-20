@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <router-view></router-view>
-  </div>
+  <!-- 我的 -->
+  <div class="mine">我的</div>
 </template>
 
 <script setup></script>

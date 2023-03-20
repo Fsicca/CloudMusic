@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <router-view></router-view>
-  </div>
+  <!-- 视频 -->
+  <div class="video">视频</div>
 </template>
 
 <script setup></script>
