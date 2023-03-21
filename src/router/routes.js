@@ -23,6 +23,22 @@ export default [
         name: "videos",
         component: () => import("../views/Videos.vue"),
       },
+      {
+        path: "",
+        redirect: "/foundMusic",
+      },
     ],
+  },
+  // 搜索
+  {
+    path: "/search",
+    name: "search",
+    component: () => import("../views/SearchMusic.vue"),
+  },
+  // 歌单详情
+  {
+    path: "/musicListDetail",
+    name: "musicListDetail",
+    component: () => import("../views/MusicListDetails.vue"),
   },
 ];

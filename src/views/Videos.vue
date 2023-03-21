@@ -1,8 +1,21 @@
 <template>
   <!-- 视频 -->
-  <div class="video">视频</div>
+  <div class="video">
+    <header>
+      <Header></Header>
+    </header>
+    视频
+  </div>
 </template>
 
-<script setup></script>
+<script setup>
+import Header from "../components/home/Header.vue";
+</script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.video {
+  header {
+    padding: 32px 0;
+  }
+}
+</style>
