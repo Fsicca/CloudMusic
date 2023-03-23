@@ -23,6 +23,6 @@ import Popup from "../components/home/Popup.vue";
   background-repeat: no-repeat;
   background-position: center center;
   background-size: 100% 100%;
-  height: 100vh;
+  height: 93.8vh;
 }
 </style>

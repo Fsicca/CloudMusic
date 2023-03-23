@@ -5,9 +5,12 @@
         <component :is="Component"></component>
       </keep-alive>
     </router-view>
+    <FooterMusic />
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import FooterMusic from "@/components/musicList/FooterMusic.vue";
+</script>
 
 <style lang="scss" scoped></style>

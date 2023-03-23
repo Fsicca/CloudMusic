@@ -26,7 +26,7 @@
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-bofang"></use>
               </svg>
-              <span>{{ setPlayCount(item.playCount) }}</span>
+              <span>{{ setCount(item.playCount) }}</span>
             </div>
 
             <span class="reTitle">{{ item.name }}</span>
@@ -47,11 +47,13 @@ let { recomList } = storeToRefs(useCount());
 
 getRecomList();
 
-const setPlayCount = (num) => {
+const setCount = (num) => {
   if (num >= 100000000) {
     return (num / 100000000).toFixed(1) + " 亿";
   } else if (num >= 10000) {
-    return (num / 10000).toFixed(0) + " 万";
+    return (num / 10000).toFixed(1) + " 万";
+  } else {
+    return num;
   }
 };
 </script>
