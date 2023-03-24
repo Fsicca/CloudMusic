@@ -16,3 +16,16 @@ export const getMusicList = (id) =>
     url: "/playlist/track/all?id=" + id + "&limit=&offset=0",
     method: "get",
   });
+
+// 歌单列表
+export const getMusicLyric = (id) =>
+  request({
+    url: "/lyric?id=" + id,
+    method: "get",
+  });
+// 歌单列表 新
+// export const getMusicLyrics = (id) =>
+// request({
+//   url: "/lyric/new?id=" + id,
+//   method: "get",
+// });

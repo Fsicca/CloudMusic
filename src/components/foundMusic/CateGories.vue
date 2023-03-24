@@ -97,7 +97,7 @@
         padding: 20px 20px;
         .icon {
           font-size: 42px;
-          color: #ff235d;
+          color: #fe3346;
         }
         span {
           padding: 15px 0;

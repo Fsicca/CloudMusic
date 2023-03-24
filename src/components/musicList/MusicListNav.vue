@@ -1,22 +1,24 @@
 <template>
   <div class="mlHHH"></div>
-  <div class="mlHead">
-    <div class="mlHeadLeft" @click="router.go(-1)">
-      <svg class="icon back" aria-hidden="true">
-        <use xlink:href="#icon-zuojiantou1"></use>
-      </svg>
-      <span>歌单</span>
-    </div>
-    <div class="mlHeadRight">
-      <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-sousuo"></use>
-      </svg>
-      <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-shezhi2-copy"></use>
-      </svg>
-    </div>
-    <!-- vant 导航组件 -->
-    <!-- <van-nav-bar
+  <van-sticky>
+    <div class="mlHead">
+      <div class="mlHeadLeft" @click="router.go(-1)">
+        <svg class="icon back" aria-hidden="true">
+          <use xlink:href="#icon-zuojiantou1"></use>
+        </svg>
+        <span>歌单</span>
+      </div>
+      <div class="mlHeadRight">
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-sousuo"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-shezhi2-copy"></use>
+        </svg>
+      </div>
+
+      <!-- vant 导航组件 -->
+      <!-- <van-nav-bar
         left-arrow
         @click-left="router.go(-1)"
         :fixed="true"
@@ -40,7 +42,8 @@
           </div>
         </template>
       </van-nav-bar> -->
-  </div>
+    </div>
+  </van-sticky>
 </template>
 
 <script setup>

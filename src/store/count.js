@@ -3,9 +3,17 @@ import { ref, reactive } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { getBanner, getRecommendedList } from "@/services/api/found.js";
-import { getMusicListDetail, getMusicList } from "@/services/api/musicList.js";
+import {
+  getMusicListDetail,
+  getMusicList,
+  getMusicLyric,
+} from "@/services/api/musicList.js";
 
 export const useCount = defineStore("count", () => {
+  // 加载
+  // let isLoading = ref(false);
+  // let pathUrl = ref("");
+
   // 搜索
   // 搜索词
   let search = ref("");
@@ -51,7 +59,7 @@ export const useCount = defineStore("count", () => {
   // 获取歌曲列表
   let getMusicLists = async () => {
     let res = await getMusicList(route.query.id);
-    console.log(res);
+    // console.log(res);
     musLists.value = res.songs;
     // console.log(musLists.value);
   };
@@ -88,6 +96,19 @@ export const useCount = defineStore("count", () => {
   let isPShow = ref(false); //播放暂停按钮
   let isMusicShow = ref(false); // 歌曲播放页 显示隐藏
 
+  let musLyric = ref({}); // 歌词
+  // 获取歌词
+  let getLyric = async (mid) => {
+    let res = await getMusicLyric(mid);
+    // console.log(res);
+    musLyric.value = res.lrc;
+    console.log(musLyric.value);
+  };
+  let currentMusicTime = ref(0); // 当前音乐播放时间
+  let allMusicTime = ref(0); // 歌曲的全部时间
+
+  let slider = ref(0); // 进度条值
+
   return {
     //搜索
     search,
@@ -115,5 +136,11 @@ export const useCount = defineStore("count", () => {
     isPShow,
     isMusicShow,
     getMusicLists,
+    // 歌词
+    getLyric,
+    musLyric,
+    currentMusicTime,
+    allMusicTime,
+    slider,
   };
 });

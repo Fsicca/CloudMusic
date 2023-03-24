@@ -13,23 +13,27 @@
           />
         </div>
         <span class="musName">
-          {{ playlist[playlistIdx].name }} -
-          <i class="arName">
-            <span v-for="(ar, idx) in playlist[playlistIdx].ar" :key="ar.id">
-              {{
-                idx == playlist[playlistIdx].ar.length - 1
-                  ? ar.name
-                  : ar.name + " / "
-              }}
-            </span>
-          </i>
+          <Vue3Marquee>
+            {{ playlist[playlistIdx].name }}
+
+            &nbsp;&nbsp;-&nbsp;&nbsp;
+            <i class="arName">
+              <span v-for="(ar, idx) in playlist[playlistIdx].ar" :key="ar.id">
+                {{
+                  idx == playlist[playlistIdx].ar.length - 1
+                    ? ar.name
+                    : ar.name + " / "
+                }}
+              </span>
+            </i>
+          </Vue3Marquee>
         </span>
       </div>
       <div class="fmRight">
         <svg
           class="icon play"
           aria-hidden="true"
-          @click="playMusic"
+          @click="controlMusic"
           v-show="!isPShow"
         >
           <use xlink:href="#icon-bofang4"></use>
@@ -37,7 +41,7 @@
         <svg
           class="icon pase"
           aria-hidden="true"
-          @click="paseMusic"
+          @click="controlMusic"
           v-show="isPShow"
         >
           <use xlink:href="#icon-zanting2"></use>
@@ -48,6 +52,7 @@
         <audio
           ref="audio"
           :src="`https://music.163.com/song/media/outer/url?id=${playlist[playlistIdx].id}.mp3 `"
+          @timeupdate="timeupdate"
         ></audio>
       </div>
     </div>
@@ -59,24 +64,57 @@
       :safe-area-inset-bottom="true"
       :style="{ height: '100%' }"
       :z-index="999"
+      @open="currentMusicTime = '00 : 00'"
     >
-      <PlayMusicDetail />
+      <PlayMusicDetail
+        :palyMusicDetails="playlist[playlistIdx]"
+        :controlMusic="controlMusic"
+        :onChange="onChange"
+      />
     </van-popup>
   </div>
 </template>
 
 <script setup>
 import PlayMusicDetail from "./PlayMusicDetail.vue";
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, onUpdated, computed } from "vue";
+
 import { useCount } from "@/store/count";
 import { storeToRefs } from "pinia";
 
-const countStore = useCount();
+import { useRouter } from "vue-router";
+const router = useRouter();
 
-let { palyDetails, isPShow, playlist, playlistIdx, isMusicShow } = storeToRefs(
-  useCount()
-);
-let audio = ref(null);
+const countStore = useCount();
+let { getLyric } = countStore;
+
+let {
+  palyDetails,
+  isPShow,
+  playlist,
+  playlistIdx,
+  isMusicShow,
+  musLyric,
+  currentMusicTime,
+  allMusicTime,
+  slider,
+  isLyricShow,
+} = storeToRefs(useCount());
+
+getLyric(playlist.value[playlistIdx.value].id);
+
+onMounted(() => {
+  if (audio.value.paused) {
+    isPShow.value = false;
+  }
+});
+
+onUpdated(() => {
+  getLyric(playlist.value[playlistIdx.value].id);
+});
+
+let audio = ref(null); // 获取audio元素节点
+
 // 播放音乐
 const playMusic = () => {
   audio.value.play();
@@ -88,6 +126,30 @@ const paseMusic = () => {
   isPShow.value = false;
 };
 
+// 按键播放 判断播放状态
+const controlMusic = (e) => {
+  if (audio.value.paused) {
+    audio.value.play();
+    isPShow.value = true;
+  } else {
+    audio.value.pause();
+    isPShow.value = false;
+  }
+};
+
+// 全局播放
+document.onkeydown = (e) => {
+  // console.log(e.keyCode);
+  if (e.ctrlKey && e.keyCode == 81) {
+    controlMusic();
+  }
+  if (e.ctrlKey && e.keyCode == 39) {
+    playlistIdx.value++;
+  }
+  if (e.ctrlKey && e.keyCode == 37) {
+    playlistIdx.value--;
+  }
+};
 // 监听播放列表的下标 发生改变自动播放音乐
 watch(playlistIdx, () => {
   // console.log(playlistIdx.value);
@@ -97,9 +159,50 @@ watch(playlistIdx, () => {
   }
 });
 
+// 进度条时间改变
+const timeupdate = () => {
+  slider.value = (audio.value.currentTime / audio.value.duration) * 100;
+  // console.log(audio.value.currentTime, audio.value.duration);
+  allMusicTime.value = audio.value.duration;
+
+  let min = String(audio.value.currentTime / 60).substring(0, 1);
+  let arr = String(audio.value.currentTime % 60).split(".");
+  let sec = arr[0];
+  // console.log(sec);
+  if (min.length == 1) {
+    min = "0" + min;
+  } else {
+    min = min;
+  }
+  if (sec.length == 1) {
+    sec = "0" + String(audio.value.currentTime % 60).substring(0, 1);
+  } else {
+    sec = sec;
+  }
+  let time;
+  if (allMusicTime.value) {
+    time = min + " : " + sec;
+  } else {
+    time = "00 : 00";
+  }
+  currentMusicTime.value = time;
+};
+// 进度条拖动
+const onChange = () => {
+  audio.value.currentTime = (slider.value / 100) * audio.value.duration;
+  if (audio.value.currentTime == audio.value.duration) {
+    audio.value.pause();
+    isPShow.value = false;
+  } else {
+    audio.value.play();
+    isPShow.value = true;
+  }
+};
+
 // 点击弹出播放页面
 const getMusicPaly = () => {
   isMusicShow.value = true;
+  isLyricShow = true;
 };
 </script>
 
@@ -141,7 +244,11 @@ const getMusicPaly = () => {
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .musName {
+      font-size: 26px;
+    }
     .arName {
+      font-size: 24px;
       color: #b4b2b3;
     }
   }

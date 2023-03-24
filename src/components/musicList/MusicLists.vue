@@ -1,27 +1,28 @@
 <template>
   <!-- 歌单列表 -->
   <div class="musLists" v-if="musLists">
-    <div class="muslTitle">
-      <div class="musltLeft" @click="playAll">
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#icon-bofang8"></use>
-        </svg>
-        <span>
-          播放全部 （
-          <i>{{ musLists.length }}</i>
-          ）
-        </span>
+    <van-sticky :offset-top="50">
+      <div class="muslTitle">
+        <div class="musltLeft" @click="playAll">
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-bofang8"></use>
+          </svg>
+          <span>
+            播放全部 （
+            <i>{{ musLists.length }}</i>
+            ）
+          </span>
+        </div>
+        <div class="musltRight">
+          <svg class="icon upload" aria-hidden="true">
+            <use xlink:href="#icon-xiazai3"></use>
+          </svg>
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-shaixuanliebiao"></use>
+          </svg>
+        </div>
       </div>
-      <div class="musltRight">
-        <svg class="icon upload" aria-hidden="true">
-          <use xlink:href="#icon-xiazai3"></use>
-        </svg>
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#icon-shaixuanliebiao"></use>
-        </svg>
-      </div>
-    </div>
-
+    </van-sticky>
     <!-- 列表 -->
     <div class="musl">
       <ul>
@@ -31,7 +32,15 @@
             @click="setMusic(idx)"
             :class="{ active: item.id == playlist[playlistIdx].id }"
           >
-            <span>{{ idx + 1 }}</span>
+            <span v-if="item.id != playlist[playlistIdx].id">
+              {{ idx + 1 }}
+            </span>
+            <img
+              src="@/assets/play.gif"
+              alt=""
+              class="palyStatus"
+              v-if="item.id == playlist[playlistIdx].id"
+            />
             <!-- 歌曲名字 -->
             <div class="musName">
               <p>
@@ -50,9 +59,14 @@
                   </svg>
                 </span>
                 <span v-for="(ar, arIdx) in item.ar">
-                  {{ arIdx == item.ar.length - 1 ? ar.name : ar.name + " / " }}
+                  {{
+                    arIdx == item.ar.length - 1
+                      ? ar.name
+                      : ar.name + "&nbsp;/&nbsp; "
+                  }}
                 </span>
-                &nbsp;&nbsp;-&nbsp;&nbsp; {{ item.al.name }}
+                &nbsp;&nbsp;-&nbsp;&nbsp;
+                {{ item.al.name }}
               </i>
             </div>
           </div>
@@ -67,6 +81,12 @@
         </li>
       </ul>
     </div>
+    <van-back-top
+      bottom="8vh"
+      right="10vw"
+      offset="500"
+      style="background-color: #fe3346"
+    />
   </div>
 </template>
 
@@ -78,8 +98,8 @@ import { storeToRefs } from "pinia";
 
 let countStore = useCount();
 
-let { getMusicLists } = countStore;
-let { musLists, playlist, playlistIdx } = storeToRefs(useCount());
+let { getMusicLists, getLyric } = countStore;
+let { musLists, playlist, playlistIdx, isMusicShow } = storeToRefs(useCount());
 
 onActivated(() => {
   getMusicLists();
@@ -93,6 +113,8 @@ onDeactivated(() => {
 const playAll = () => {
   playlist.value = musLists.value;
   playlistIdx.value = 0;
+  // getLyric(playlist.value[playlistIdx.value].id);
+
   localStorage.setItem("playlist", JSON.stringify(playlist.value));
   localStorage.setItem("playlistIdx", playlistIdx.value);
 };
@@ -101,8 +123,10 @@ const playAll = () => {
 const setMusic = (idx) => {
   playlist.value = musLists.value;
   playlistIdx.value = idx;
-  console.log(playlist.value[playlistIdx.value].id);
+  // console.log(playlist.value[playlistIdx.value].id);
+  // getLyric(playlist.value[playlistIdx.value].id);
 
+  isMusicShow.value = true; // 控制歌曲详情页的弹出
   // console.log(playlist.value[playlistIdx.value]);
   localStorage.setItem("playlistIdx", playlistIdx.value);
   localStorage.setItem("playlist", JSON.stringify(playlist.value));
@@ -120,6 +144,7 @@ const setMusic = (idx) => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .musltLeft {
       display: flex;
       align-items: center;
@@ -145,6 +170,9 @@ const setMusic = (idx) => {
   }
   .active {
     color: #fe3346 !important;
+  }
+  .palyStatus {
+    width: 25px;
   }
 
   .musl {
