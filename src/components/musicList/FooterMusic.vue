@@ -11,18 +11,18 @@
             round
             width=".7rem"
             height=".7rem"
-            :src="playlist[playlistIdx].al.picUrl"
+            :src="playlist[playlistIdx]?.al.picUrl"
           />
         </div>
         <span class="musName">
           <Vue3Marquee>
-            {{ playlist[playlistIdx].name }}
+            {{ playlist[playlistIdx]?.name }}
 
             &nbsp;&nbsp;-&nbsp;&nbsp;
             <i class="arName">
-              <span v-for="(ar, idx) in playlist[playlistIdx].ar" :key="ar.id">
+              <span v-for="(ar, idx) in playlist[playlistIdx]?.ar" :key="ar.id">
                 {{
-                  idx == playlist[playlistIdx].ar.length - 1
+                  idx == playlist[playlistIdx]?.ar.length - 1
                     ? ar.name
                     : ar.name + " / "
                 }}
@@ -70,7 +70,7 @@
         </svg>
         <audio
           ref="audio"
-          :src="`https://music.163.com/song/media/outer/url?id=${playlist[playlistIdx].id}.mp3 `"
+          :src="`https://music.163.com/song/media/outer/url?id=1868206871.mp3 `"
           @timeupdate="timeupdate"
         ></audio>
       </div>
@@ -121,7 +121,7 @@ let {
   isLyricShow,
 } = storeToRefs(useCount());
 
-getLyric(playlist.value[playlistIdx.value].id);
+getLyric(playlist.value[playlistIdx.value]?.id);
 
 onMounted(() => {
   if (audio.value.paused) {
@@ -180,7 +180,7 @@ watch(playlistIdx, () => {
     isPShow.value = true;
   }
 
-  getLyric(playlist.value[playlistIdx.value].id); // 获取歌词
+  getLyric(playlist.value[playlistIdx.value]?.id); // 获取歌词
 
   // console.log(audio.value.error);
   // if (audio.value.error) {

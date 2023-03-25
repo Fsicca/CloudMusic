@@ -30,22 +30,22 @@
           <div
             class="itemLeft"
             @click="setMusic(idx)"
-            :class="{ active: item.id == playlist[playlistIdx].id }"
+            :class="{ active: item.id == playlist[playlistIdx]?.id }"
           >
-            <span v-if="item.id != playlist[playlistIdx].id">
+            <span v-if="item.id != playlist[playlistIdx]?.id">
               {{ idx + 1 }}
             </span>
             <img
               src="@/assets/play.gif"
               alt=""
               class="palyStatus"
-              v-if="item.id == playlist[playlistIdx].id"
+              v-if="item.id == playlist[playlistIdx]?.id"
             />
             <!-- 歌曲名字 -->
             <div class="musName">
               <p>
                 <span
-                  :class="{ active: item.id == playlist[playlistIdx].id }"
+                  :class="{ active: item.id == playlist[playlistIdx]?.id }"
                   >{{ item.name }}</span
                 >
                 &nbsp;
@@ -115,7 +115,7 @@ onDeactivated(() => {
 const playAll = () => {
   playlist.value = musLists.value;
   playlistIdx.value = 0;
-  // getLyric(playlist.value[playlistIdx.value].id);
+  getLyric(playlist.value[playlistIdx.value].id);
 
   localStorage.setItem("playlist", JSON.stringify(playlist.value));
   localStorage.setItem("playlistIdx", playlistIdx.value);

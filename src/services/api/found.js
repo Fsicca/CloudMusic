@@ -13,6 +13,6 @@ export const getBanner = () =>
 // 推荐歌单
 export const getRecommendedList = () =>
   request({
-    url: "/personalized?limit=20", // limit 获取几个 最大30个
+    url: "/personalized?limit=10", // limit 获取几个 最大30个
     method: "get",
   });
