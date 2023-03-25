@@ -9,23 +9,29 @@ let instance = axios.create({
 });
 
 // 拦截器
-instance.interceptors.request.use((config) => {
-  // 添加时间戳
-  if (config.method == "post") {
-    config.data = {
-      ...config.data,
-      _t: Date.parse(new Date()) / 1000,
-    };
-  } else if (config.method == "get") {
-    config.params = {
-      _t: Date.parse(new Date()) / 1000,
-      ...config.params,
-    };
-  }
+instance.interceptors.request.use(
+  (config) => {
+    // 添加时间戳
+    if (config.method == "post") {
+      config.data = {
+        ...config.data,
+        _t: Date.parse(new Date()) / 1000,
+      };
+    } else if (config.method == "get") {
+      config.params = {
+        // realIP: "116.25.146.177",
+        _t: Date.parse(new Date()) / 1000,
+        ...config.params,
+      };
+    }
 
-  // countStore.isLoading.value = true;
-  return config;
-});
+    // countStore.isLoading.value = true;
+    return config;
+  },
+  (err) => {
+    return err;
+  }
+);
 instance.interceptors.response.use((res) => {
   // isLoading.value = false;
   return res.data;

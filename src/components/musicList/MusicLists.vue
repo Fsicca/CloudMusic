@@ -99,7 +99,9 @@ import { storeToRefs } from "pinia";
 let countStore = useCount();
 
 let { getMusicLists, getLyric } = countStore;
-let { musLists, playlist, playlistIdx, isMusicShow } = storeToRefs(useCount());
+let { musLists, playlist, playlistIdx, isMusicShow, isLyricShow } = storeToRefs(
+  useCount()
+);
 
 onActivated(() => {
   getMusicLists();
@@ -126,7 +128,8 @@ const setMusic = (idx) => {
   // console.log(playlist.value[playlistIdx.value].id);
   // getLyric(playlist.value[playlistIdx.value].id);
 
-  isMusicShow.value = true; // 控制歌曲详情页的弹出
+  isMusicShow.value = true; // 控制歌曲播放页面的弹出
+  isLyricShow.value = true; // 歌曲播放页面 初始显示 歌曲图片
   // console.log(playlist.value[playlistIdx.value]);
   localStorage.setItem("playlistIdx", playlistIdx.value);
   localStorage.setItem("playlist", JSON.stringify(playlist.value));

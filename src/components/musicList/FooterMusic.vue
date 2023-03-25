@@ -2,7 +2,9 @@
   <!-- 底部音乐播放器 -->
 
   <div class="footerMusic">
-    <div class="fMusic">
+    <div
+      :class="[route.path == '/musicListDetail' ? 'fMusic' : 'fMusic_acitve']"
+    >
       <div class="fmLeft" @click="getMusicPaly">
         <div class="fmImg">
           <van-image
@@ -26,26 +28,43 @@
                 }}
               </span>
             </i>
+            <!-- 防止首尾相连 -->
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </Vue3Marquee>
         </span>
       </div>
       <div class="fmRight">
-        <svg
-          class="icon play"
-          aria-hidden="true"
-          @click="controlMusic"
-          v-show="!isPShow"
+        <!-- 环形进度条播放暂停 -->
+        <van-circle
+          v-model:current-rate="slider"
+          :rate="30"
+          color="#000"
+          size="24"
+          layer-color="#b4b2b3"
+          :speed="100"
+          class="round"
         >
-          <use xlink:href="#icon-bofang4"></use>
-        </svg>
-        <svg
-          class="icon pase"
-          aria-hidden="true"
-          @click="controlMusic"
-          v-show="isPShow"
-        >
-          <use xlink:href="#icon-zanting2"></use>
-        </svg>
+          <template #default>
+            <div>
+              <svg
+                class="icon play"
+                aria-hidden="true"
+                @click="controlMusic"
+                v-show="!isPShow"
+              >
+                <use xlink:href="#icon-bofang10"></use>
+              </svg>
+              <svg
+                class="icon pase"
+                aria-hidden="true"
+                @click="controlMusic"
+                v-show="isPShow"
+              >
+                <use xlink:href="#icon-zanting4"></use>
+              </svg>
+            </div>
+          </template>
+        </van-circle>
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-24gl-playlist2"></use>
         </svg>
@@ -77,13 +96,14 @@
 
 <script setup>
 import PlayMusicDetail from "./PlayMusicDetail.vue";
-import { ref, onMounted, watch, onUpdated, computed } from "vue";
+import { ref, reactive, onMounted, watch, onUpdated, computed } from "vue";
 
 import { useCount } from "@/store/count";
 import { storeToRefs } from "pinia";
 
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 const router = useRouter();
+const route = useRoute();
 
 const countStore = useCount();
 let { getLyric } = countStore;
@@ -110,7 +130,7 @@ onMounted(() => {
 });
 
 onUpdated(() => {
-  getLyric(playlist.value[playlistIdx.value].id);
+  // console.log(route.path);
 });
 
 let audio = ref(null); // 获取audio元素节点
@@ -145,9 +165,11 @@ document.onkeydown = (e) => {
   }
   if (e.ctrlKey && e.keyCode == 39) {
     playlistIdx.value++;
+    localStorage.setItem("playlistIdx", playlistIdx.value);
   }
   if (e.ctrlKey && e.keyCode == 37) {
     playlistIdx.value--;
+    localStorage.setItem("playlistIdx", playlistIdx.value);
   }
 };
 // 监听播放列表的下标 发生改变自动播放音乐
@@ -157,6 +179,14 @@ watch(playlistIdx, () => {
   if (audio.value.paused) {
     isPShow.value = true;
   }
+
+  getLyric(playlist.value[playlistIdx.value].id); // 获取歌词
+
+  // console.log(audio.value.error);
+  // if (audio.value.error) {
+  //   playlistIdx.value++;
+  //   localStorage.setItem("playlistIdx", playlistIdx.value);
+  // }
 });
 
 // 进度条时间改变
@@ -165,34 +195,20 @@ const timeupdate = () => {
   // console.log(audio.value.currentTime, audio.value.duration);
   allMusicTime.value = audio.value.duration;
 
-  let min = String(audio.value.currentTime / 60).substring(0, 1);
-  let arr = String(audio.value.currentTime % 60).split(".");
-  let sec = arr[0];
-  // console.log(sec);
-  if (min.length == 1) {
-    min = "0" + min;
-  } else {
-    min = min;
+  currentMusicTime.value = audio.value.currentTime;
+
+  // 播放完毕下一首
+  if (audio.value.currentTime == audio.value.duration) {
+    playlistIdx.value++;
+    localStorage.setItem("playlistIdx", playlistIdx.value);
   }
-  if (sec.length == 1) {
-    sec = "0" + String(audio.value.currentTime % 60).substring(0, 1);
-  } else {
-    sec = sec;
-  }
-  let time;
-  if (allMusicTime.value) {
-    time = min + " : " + sec;
-  } else {
-    time = "00 : 00";
-  }
-  currentMusicTime.value = time;
 };
 // 进度条拖动
 const onChange = () => {
   audio.value.currentTime = (slider.value / 100) * audio.value.duration;
   if (audio.value.currentTime == audio.value.duration) {
-    audio.value.pause();
-    isPShow.value = false;
+    playlistIdx.value++;
+    localStorage.setItem("playlistIdx", playlistIdx.value);
   } else {
     audio.value.play();
     isPShow.value = true;
@@ -215,6 +231,21 @@ const getMusicPaly = () => {
     background-color: #ffffff;
     position: fixed;
     bottom: 0;
+    box-shadow: 0 0 2px #949599;
+    z-index: 99;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 33px;
+    box-sizing: border-box;
+  }
+  .fMusic_acitve {
+    width: 100%;
+    height: 100px;
+    background-color: #ffffff;
+    position: fixed;
+    bottom: 122px;
     box-shadow: 0 0 2px #949599;
     z-index: 99;
 
@@ -254,11 +285,20 @@ const getMusicPaly = () => {
   }
   .fmRight {
     font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .round {
+      box-sizing: border-box;
+      margin-right: 30px;
+    }
     .play {
-      margin-right: 50px;
+      width: 20px;
+      padding-left: 33%;
     }
     .pase {
-      margin-right: 50px;
+      width: 20px;
+      padding-left: 28%;
     }
   }
 }

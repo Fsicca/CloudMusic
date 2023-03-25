@@ -54,9 +54,23 @@
       class="musLyric"
       v-show="!isLyricShow"
       @click="isLyricShow = !isLyricShow"
+      ref="lyricBox"
     >
       <ul>
-        <li v-for="item in disposeLyric">
+        <li
+          v-for="item in disposeLyric"
+          :class="{
+            li_active:
+              currentMusicTime * 1000 >= item.time &&
+              currentMusicTime * 1000 < item.pre,
+          }"
+          :ref="
+            currentMusicTime * 1000 >= item.time &&
+            currentMusicTime * 1000 < item.pre
+              ? 'lyric'
+              : ''
+          "
+        >
           {{ item.lyrics }}
         </li>
       </ul>
@@ -82,7 +96,7 @@
       </div>
       <!-- 进度条 -->
       <div class="playBar">
-        <span class="playTime">{{ currentMusicTime }}</span>
+        <span class="playTime">{{ disposeTime(currentMusicTime) }}</span>
         <van-slider
           v-model="slider"
           @change="onChange"
@@ -91,13 +105,13 @@
           active-color="rgb(254, 51, 70, 0.7)"
           class="slider"
         />
-        <span class="musTime">{{ disposeTime }}</span>
+        <span class="musTime">{{ disposeTime(allMusicTime) }}</span>
       </div>
       <div class="playControl">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-24gl-repeat2"></use>
         </svg>
-        <svg class="icon" aria-hidden="true" @click="playlistIdx--">
+        <svg class="icon" aria-hidden="true" @click="preMusic">
           <use xlink:href="#icon-shangyishoushangyige"></use>
         </svg>
         <div class="playIcon">
@@ -119,7 +133,7 @@
           </svg>
         </div>
 
-        <svg class="icon" aria-hidden="true" @click="playlistIdx++">
+        <svg class="icon" aria-hidden="true" @click="nextMusic">
           <use xlink:href="#icon-xiayigexiayishou"></use>
         </svg>
         <svg class="icon" aria-hidden="true">
@@ -131,7 +145,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, computed } from "vue";
+import { ref, defineProps, computed, watch } from "vue";
 import { useCount } from "@/store/count";
 import { storeToRefs } from "pinia";
 
@@ -146,6 +160,7 @@ let {
   playlistIdx,
   isMusicShow,
   isPShow,
+  isLyricShow,
   musLyric,
   slider,
   currentMusicTime,
@@ -155,52 +170,104 @@ let {
 const props = defineProps(["palyMusicDetails", "controlMusic", "onChange"]); // 父传子接收
 console.log(props.palyMusicDetails);
 
-let isLyricShow = ref(true);
-
 // 拆分歌词数据
 let disposeLyric = computed(() => {
   let arr;
   if (musLyric.value.lyric) {
-    arr = musLyric.value.lyric.split(/[(\r\n)\r\n]+/).map((item, idx) => {
-      let min = item.slice(1, 3);
+    arr = musLyric.value.lyric.split(/[(\n)\n)]+/).map((item, idx) => {
+      let min = String(Number(item.slice(1, 3)));
       let sec = item.slice(4, 6);
       let mill = item.slice(7, 10);
       let lyrics = item.slice(11, item.length);
-      let time = min * 60 * 1000 + sec * 1000 + mill * 1;
-
+      let time = parseInt(min) * 60 * 1000 + parseInt(item.slice(4, 10)) * 1000;
+      let lll = Number(lyrics);
       if (isNaN(Number(mill))) {
         mill = item.slice(7, 9);
         lyrics = item.slice(10, item.length);
-        time = min * 60 * 1000 + sec * 1000 + mill * 1;
+        time = parseInt(min) * 60 * 1000 + parseInt(item.slice(4, 10)) * 1000;
       }
       // console.log(min, sec, Number(mill), lyrics);
-      return { min, sec, mill, lyrics, time };
+      return { min, sec, mill, lyrics, time, lll };
+    });
+
+    arr.forEach((item, idx) => {
+      if (idx === arr.length - 1) {
+        item.pre = 0;
+      } else {
+        item.pre = arr[idx + 1].time;
+      }
+
+      if (isNaN(item.min)) {
+        arr.splice(idx, 1);
+      }
+      let lyricsReg = /[(.*?)]/i;
+
+      if (item.lyrics == "" || lyricsReg.test(item.lyrics)) {
+        item.lyrics = " ";
+      }
     });
   }
-  console.log(arr);
+  // console.log(arr);
+  // console.log(String(arr.time));
 
   return arr;
 });
 
+// 歌曲完整时间
 let disposeTime = computed(() => {
-  let min = String(allMusicTime.value / 60).substring(0, 1);
-  let sec = String(allMusicTime.value % 60).substring(0, 2);
-
-  if (min.length == 1) {
-    min = "0" + min;
-  } else {
-    min = min;
-  }
-
-  // console.log(min, sec);
-  let time;
-  if (allMusicTime.value) {
-    time = min + " : " + sec;
-  } else {
-    time = "00 : 00";
-  }
-  return time;
+  return (mtimes) => {
+    let min = String(mtimes / 60).substring(0, 1);
+    let arr = String(mtimes % 60).split(".");
+    let sec = arr[0];
+    if (min.length == 1) {
+      min = "0" + min;
+    } else {
+      min = min;
+    }
+    if (sec.length == 1) {
+      sec = "0" + String(mtimes % 60).substring(0, 1);
+    } else {
+      sec = sec;
+    }
+    // console.log(min, sec);
+    let time;
+    if (arr[1]) {
+      time = min + " : " + sec;
+    } else {
+      time = "00 : 00";
+    }
+    return time;
+  };
 });
+
+// 歌词居中滚动
+let lyric = ref();
+let lyricBox = ref();
+watch(currentMusicTime, () => {
+  // console.log([lyric.value]);
+  // console.log([lyricBox.value][0].scrollTop);
+
+  if (lyric.value && lyric.value[0].offsetTop > 350) {
+    // console.log(lyric.value[0].offsetTop);
+    // console.log([lyricBox.value][0].scrollTop);
+    [lyricBox.value][0].scrollTop = lyric.value[0].offsetTop - 350;
+  }
+  if (currentMusicTime.value == 0) {
+    [lyricBox.value][0].scrollTop = 0;
+  }
+});
+
+// 上一首
+const preMusic = () => {
+  playlistIdx.value--;
+  localStorage.setItem("playlistIdx", playlistIdx.value);
+};
+
+// 下一首
+const nextMusic = () => {
+  playlistIdx.value++;
+  localStorage.setItem("playlistIdx", playlistIdx.value);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -232,6 +299,7 @@ let disposeTime = computed(() => {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        font-size: 28px;
       }
       .arName {
         padding: 5px 0;
@@ -287,10 +355,10 @@ let disposeTime = computed(() => {
       }
 
       .playTime {
-        color: #fff;
+        color: #d7d7d7;
       }
       .musTime {
-        color: #d7d7d7;
+        color: #acacac;
       }
     }
   }
@@ -304,12 +372,17 @@ let disposeTime = computed(() => {
     flex-direction: column;
     align-items: center;
     margin: 30px 0 60px;
-    overflow: auto;
+    overflow: scroll;
+    scroll-behavior: smooth;
     ul {
       li {
         padding: 20px 0;
         text-align: center;
         font-size: 26px;
+      }
+      .li_active {
+        color: #fff;
+        font-size: 30px;
       }
     }
   }

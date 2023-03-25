@@ -95,14 +95,18 @@ export const useCount = defineStore("count", () => {
   let playlistIdx = ref(plIdx); // 播放默认下标
   let isPShow = ref(false); //播放暂停按钮
   let isMusicShow = ref(false); // 歌曲播放页 显示隐藏
+  let isLyricShow = ref(true); // 歌曲图片 歌词 切换隐藏
 
   let musLyric = ref({}); // 歌词
+  let cantLyric = ref({});
   // 获取歌词
   let getLyric = async (mid) => {
     let res = await getMusicLyric(mid);
     // console.log(res);
     musLyric.value = res.lrc;
-    console.log(musLyric.value);
+    cantLyric.value = res.romalrc;
+    // console.log(musLyric.value.lyric);
+    // console.log(cantLyric.value);
   };
   let currentMusicTime = ref(0); // 当前音乐播放时间
   let allMusicTime = ref(0); // 歌曲的全部时间
@@ -135,6 +139,7 @@ export const useCount = defineStore("count", () => {
     playlistIdx,
     isPShow,
     isMusicShow,
+    isLyricShow,
     getMusicLists,
     // 歌词
     getLyric,
