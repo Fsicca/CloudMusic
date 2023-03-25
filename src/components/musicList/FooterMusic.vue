@@ -37,7 +37,7 @@
         <!-- 环形进度条播放暂停 -->
         <van-circle
           v-model:current-rate="slider"
-          :rate="30"
+          :rate="0"
           color="#000"
           size="24"
           layer-color="#b4b2b3"
@@ -70,7 +70,7 @@
         </svg>
         <audio
           ref="audio"
-          :src="`https://music.163.com/song/media/outer/url?id=1868206871.mp3 `"
+          :src="`https://music.163.com/song/media/outer/url?id=${playlist[playlistIdx]?.id}.mp3 `"
           @timeupdate="timeupdate"
         ></audio>
       </div>

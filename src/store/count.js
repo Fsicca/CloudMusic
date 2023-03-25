@@ -74,13 +74,16 @@ export const useCount = defineStore("count", () => {
       {
         al: {
           id: 90388661,
-          name: "一切都会好起来的", // 专辑名字
-          picUrl:
-            "https://p1.music.126.net/Jv2DvcSPU1nSyDk71AGmow==/109951165039334386.jpg", // 歌曲图片
+          name: "阳光大男孩", // 专辑名字
+          picUrl: "https://inews.gtimg.com/newsapp_bt/0/9680744090/1000", // 歌曲图片
           pic_str: "109951165039334386",
         },
-        name: "", //
-        ar: [], // 歌手名字
+        name: "ikun", //
+        ar: [
+          {
+            name: "小黑子",
+          },
+        ], // 歌手名字
         id: 1453210382, // 歌曲id
       },
     ];

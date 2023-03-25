@@ -115,7 +115,7 @@ onDeactivated(() => {
 const playAll = () => {
   playlist.value = musLists.value;
   playlistIdx.value = 0;
-  getLyric(playlist.value[playlistIdx.value].id);
+  getLyric(playlist.value[playlistIdx.value]?.id);
 
   localStorage.setItem("playlist", JSON.stringify(playlist.value));
   localStorage.setItem("playlistIdx", playlistIdx.value);
