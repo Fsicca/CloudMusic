@@ -5,7 +5,9 @@ import axios from "axios";
 // const countStore = useCount();
 
 let instance = axios.create({
-  baseURL: "http://localhost:3000",
+  // baseURL: "http://localhost:3000", // 本地
+  baseURL:
+    "https://service-9kzf0xba-1317500014.gz.apigw.tencentcs.com/release/", // 腾讯云
 });
 
 // 拦截器
