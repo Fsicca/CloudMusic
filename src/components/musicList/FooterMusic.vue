@@ -3,7 +3,11 @@
 
   <div class="footerMusic">
     <div
-      :class="[route.path == '/musicListDetail' ? 'fMusic' : 'fMusic_acitve']"
+      :class="[
+        route.path == '/musicListDetail' || route.path == '/search'
+          ? 'fMusic'
+          : 'fMusic_acitve',
+      ]"
     >
       <div class="fmLeft" @click="getMusicPaly">
         <div class="fmImg">
@@ -164,11 +168,20 @@ document.onkeydown = (e) => {
     controlMusic();
   }
   if (e.ctrlKey && e.keyCode == 39) {
-    playlistIdx.value++;
+    if (playlistIdx.value >= playlist.value.length - 1) {
+      playlistIdx.value = 0;
+    } else {
+      playlistIdx.value++;
+    }
     localStorage.setItem("playlistIdx", playlistIdx.value);
   }
   if (e.ctrlKey && e.keyCode == 37) {
-    playlistIdx.value--;
+    if (playlistIdx.value == 0) {
+      // console.log(playlist.value.length);
+      playlistIdx.value = playlist.value.length - 1;
+    } else {
+      playlistIdx.value--;
+    }
     localStorage.setItem("playlistIdx", playlistIdx.value);
   }
 };
@@ -218,7 +231,7 @@ const onChange = () => {
 // 点击弹出播放页面
 const getMusicPaly = () => {
   isMusicShow.value = true;
-  isLyricShow = true;
+  isLyricShow.value = true;
 };
 </script>
 

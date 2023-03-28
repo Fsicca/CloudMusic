@@ -21,7 +21,6 @@ instance.interceptors.request.use(
       };
     } else if (config.method == "get") {
       config.params = {
-        // realIP: "116.25.146.177",
         _t: Date.parse(new Date()) / 1000,
         ...config.params,
       };

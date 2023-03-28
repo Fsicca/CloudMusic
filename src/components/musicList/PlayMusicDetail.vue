@@ -100,7 +100,7 @@
         <van-slider
           v-model="slider"
           @change="onChange"
-          :button-size="10"
+          :button-size="8"
           inactive-color="#545454"
           active-color="rgb(254, 51, 70, 0.7)"
           class="slider"
@@ -200,8 +200,8 @@ let disposeLyric = computed(() => {
       if (isNaN(item.min)) {
         arr.splice(idx, 1);
       }
-      let lyricsReg = /[(.*?)]/i;
 
+      let lyricsReg = /[(.*?)]/i;
       if (item.lyrics == "" || lyricsReg.test(item.lyrics)) {
         item.lyrics = " ";
       }
@@ -259,13 +259,23 @@ watch(currentMusicTime, () => {
 
 // 上一首
 const preMusic = () => {
-  playlistIdx.value--;
+  if (playlistIdx.value == 0) {
+    // console.log(playlist.value.length);
+    playlistIdx.value = playlist.value.length - 1;
+  } else {
+    playlistIdx.value--;
+  }
+
   localStorage.setItem("playlistIdx", playlistIdx.value);
 };
 
 // 下一首
 const nextMusic = () => {
-  playlistIdx.value++;
+  if (playlistIdx.value >= playlist.value.length - 1) {
+    playlistIdx.value = 0;
+  } else {
+    playlistIdx.value++;
+  }
   localStorage.setItem("playlistIdx", playlistIdx.value);
 };
 </script>

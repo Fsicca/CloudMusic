@@ -84,7 +84,7 @@ export const useCount = defineStore("count", () => {
             name: "小黑子",
           },
         ], // 歌手名字
-        id: 1453210382, // 歌曲id
+        id: 1340439829, // 歌曲id
       },
     ];
   }

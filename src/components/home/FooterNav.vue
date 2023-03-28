@@ -37,7 +37,7 @@
   left: 0;
   width: 100%;
   background-color: rgb(255, 255, 255, 0);
-  // background-color: white;
+  background-color: white;
 
   display: flex;
   justify-content: space-around;

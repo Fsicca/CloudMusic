@@ -16,3 +16,10 @@ export const getRecommendedList = () =>
     url: "/personalized?limit=10", // limit 获取几个 最大30个
     method: "get",
   });
+
+// 搜索
+export const getSeach = (word, page) =>
+  request({
+    url: "/cloudsearch?keywords=" + word + "&offset=" + page,
+    method: "get",
+  });
