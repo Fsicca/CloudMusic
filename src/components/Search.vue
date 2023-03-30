@@ -274,6 +274,9 @@ const setMusic = (idx) => {
   .palyStatus {
     width: 25px;
   }
+  .active {
+    color: #fe3346 !important;
+  }
   .schList {
     padding-top: 10px;
     padding: 0 30px;

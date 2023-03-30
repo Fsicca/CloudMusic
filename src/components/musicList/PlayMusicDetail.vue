@@ -385,6 +385,7 @@ const nextMusic = () => {
     overflow: scroll;
     scroll-behavior: smooth;
     ul {
+      width: 70%;
       li {
         padding: 20px 0;
         text-align: center;

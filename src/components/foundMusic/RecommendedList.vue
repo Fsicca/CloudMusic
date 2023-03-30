@@ -14,7 +14,7 @@
           v-for="item in recomList"
           :key="item.id"
           @click="
-            this.$router.push({
+            router.push({
               path: '/musicListDetail',
               query: { id: item.id },
             })
@@ -40,6 +40,9 @@
 <script setup>
 import { useCount } from "@/store/count";
 import { storeToRefs } from "pinia";
+import { useRoute, useRouter } from "vue-router";
+const router = useRouter();
+const route = useRoute();
 
 const countStore = useCount();
 let { getRecomList } = countStore;
