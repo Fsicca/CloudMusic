@@ -164,7 +164,7 @@ const getSchLists = async () => {
   //   }
   // }
 
-  console.log(schList.value);
+  // console.log(schList.value);
   schList.value = res.result.songs;
   // loading.value = false;
 };
@@ -199,7 +199,7 @@ const enterSch = async () => {
 
 // 点击历史搜索
 const getHisWord = async (e) => {
-  console.log(e.target.innerHTML);
+  // console.log(e.target.innerHTML);
   search.value = e.target.innerHTML;
   schWord.value.unshift(search.value);
   schWord.value = [...new Set(schWord.value)]; // 去重
