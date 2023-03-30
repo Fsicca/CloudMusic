@@ -192,7 +192,8 @@ watch(playlistIdx, () => {
   if (audio.value.paused) {
     isPShow.value = true;
   }
-
+  console.log(audio.value.error);
+  console.log(audio.value.stalled);
   getLyric(playlist.value[playlistIdx.value]?.id); // 获取歌词
 
   // console.log(audio.value.error);
@@ -258,7 +259,7 @@ const getMusicPaly = () => {
     height: 100px;
     background-color: #ffffff;
     position: fixed;
-    bottom: 122px;
+    bottom: 104px;
     box-shadow: 0 0 2px #949599;
     z-index: 99;
 

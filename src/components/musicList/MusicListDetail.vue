@@ -136,11 +136,12 @@ const setCount = (num) => {
         display: flex;
         align-items: center;
         color: #fff;
-        font-size: 10px;
+        font-size: 12px;
 
         span {
           padding-left: 5px;
           font-weight: 600;
+          font-size: 24px;
         }
       }
     }

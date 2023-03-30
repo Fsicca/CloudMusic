@@ -168,7 +168,7 @@ let {
 } = storeToRefs(useCount());
 
 const props = defineProps(["palyMusicDetails", "controlMusic", "onChange"]); // 父传子接收
-console.log(props.palyMusicDetails);
+// console.log(props.palyMusicDetails);
 
 // 拆分歌词数据
 let disposeLyric = computed(() => {

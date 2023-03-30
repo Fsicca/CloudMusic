@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, onActivated, onDeactivated } from "vue";
+import { ref, onActivated, onDeactivated, watch } from "vue";
 
 import { useCount } from "@/store/count.js";
 import { storeToRefs } from "pinia";
@@ -134,6 +134,10 @@ const setMusic = (idx) => {
   localStorage.setItem("playlistIdx", playlistIdx.value);
   localStorage.setItem("playlist", JSON.stringify(playlist.value));
 };
+
+// watch(playlist[playlistIdx], () => {
+//   console.log(66);
+// });
 </script>
 
 <style lang="scss" scoped>
