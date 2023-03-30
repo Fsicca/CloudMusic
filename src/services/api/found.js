@@ -18,8 +18,9 @@ export const getRecommendedList = () =>
   });
 
 // 搜索
-export const getSeach = (word, page) =>
+export const getSeach = (word, page, count) =>
   request({
-    url: "/cloudsearch?keywords=" + word + "&offset=" + page,
+    url:
+      "/cloudsearch?keywords=" + word + "&offset=" + page + "&limit=" + count,
     method: "get",
   });

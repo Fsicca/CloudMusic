@@ -54,6 +54,11 @@
 
     <!-- 搜索列表 -->
     <div class="schList">
+      <!-- <van-list
+        v-model:loading="loading"
+        @load="getMore"
+        :immediate-check="false"
+      > -->
       <ul ref="listBox">
         <li v-for="(item, idx) in schList" :key="item.id">
           <div
@@ -109,6 +114,7 @@
           </div>
         </li>
       </ul>
+      <!-- </van-list> -->
     </div>
   </div>
 </template>
@@ -129,6 +135,9 @@ let { musLists, playlist, playlistIdx, isMusicShow, isLyricShow } = storeToRefs(
   useCount()
 );
 
+let loading = ref(false); // 下拉加载 状态
+let page = 0; // 页数
+
 let schw = JSON.parse(localStorage.getItem("schWord"));
 if (schw) {
   schw = schw;
@@ -144,9 +153,20 @@ onActivated(() => {
 
 // 搜索列表
 const getSchLists = async () => {
-  let res = await getSeach(search.value, 1);
-  console.log(res.result.songs);
+  // loading.value = true;
+
+  let res = await getSeach(search.value, page, 50);
+  // if (res) {
+  //   if (page == 1) {
+  //     schList.value = res.result.songs;
+  //   } else {
+  //     schList.value.push(...res.result.songs);
+  //   }
+  // }
+
+  console.log(schList.value);
   schList.value = res.result.songs;
+  // loading.value = false;
 };
 
 let listBox = ref();
@@ -170,6 +190,12 @@ const enterSch = async () => {
     // search.value = "";
   }
 };
+
+// 下滑加载
+// const getMore = () => {
+//   page += 30;
+//   getSchLists();
+// };
 
 // 点击历史搜索
 const getHisWord = async (e) => {
@@ -246,9 +272,9 @@ const setMusic = (idx) => {
       // height: 30px;
       display: inline-block;
       // display: flex;
-      width: 20%;
+      // width: 20%;
       flex-wrap: wrap;
-      padding: 10px 20px;
+      padding: 15px 25px;
       margin: 5px 10px;
       background-color: rgb(107, 123, 128, 0.2);
       border-radius: 30px;
@@ -286,7 +312,7 @@ const setMusic = (idx) => {
 
     ul {
       overflow: auto;
-      height: 82vh;
+      height: 80vh;
       li {
         display: flex;
         align-items: center;
