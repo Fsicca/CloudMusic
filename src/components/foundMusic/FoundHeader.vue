@@ -5,7 +5,7 @@
     v-model="search"
     placeholder="请输入搜索关键词"
     shape="round"
-    @focus="this.$router.push('/search')"
+    @focus="router.push('/search')"
   />
 
   <svg class="icon" aria-hidden="true">
@@ -19,6 +19,9 @@
 <script setup>
 import { useCount } from "@/store/count";
 import { storeToRefs } from "pinia";
+import { useRoute, useRouter } from "vue-router";
+const router = useRouter();
+const route = useRoute();
 
 const countStore = useCount();
 

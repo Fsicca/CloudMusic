@@ -8,7 +8,7 @@
           <svg
             class="icon"
             aria-hidden="true"
-            @click="this.$router.go(-1), (search = '')"
+            @click="router.go(-1), (search = '')"
           >
             <use xlink:href="#icon-zuojiantou"></use>
           </svg>
@@ -118,6 +118,9 @@ import { ref, onActivated } from "vue";
 import { useCount } from "@/store/count";
 import { storeToRefs } from "pinia";
 import { getSeach } from "../services/api/found";
+import { useRoute, useRouter } from "vue-router";
+const router = useRouter();
+const route = useRoute();
 
 const countStore = useCount();
 
