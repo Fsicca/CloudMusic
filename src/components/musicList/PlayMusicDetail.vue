@@ -413,7 +413,7 @@ const nextMusic = () => {
 .poImg {
   width: 220px;
   // height: 250px;
-  // position: absolute;
+  position: absolute;
   top: 0;
   left: 45%;
   transform-origin: 0 0;
